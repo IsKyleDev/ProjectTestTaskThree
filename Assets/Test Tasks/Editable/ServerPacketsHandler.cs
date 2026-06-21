@@ -10,6 +10,12 @@ namespace TestTask.Editable
         {
             var clientLogInResponse = ServerMock.Instance.TryConnectClient(out var clientId);
             SendLoginResponse(clientLogInResponse, clientId);
+
+            if (clientLogInResponse == LoginResponse.Success)
+            {
+                // Inform the client about this monster via a packet.
+                SendMonsterData();
+            }
         }
 
         #endregion
@@ -21,6 +27,22 @@ namespace TestTask.Editable
             {
                 packet.Write((int)response);
                 packet.Write(clientId);
+
+                ServerMock.Instance.PacketSenderServer.SendToClient(packet);
+            }
+        }
+
+        public static void SendMonsterData()
+        {
+            MonsterData monster = ServerMock.Instance.ServerMobsManager.MonsterData;
+
+            using (Packet packet = new Packet(2))
+            {
+                packet.Write(monster.MonsterId);
+                packet.Write((int)monster.MonsterType);
+
+                packet.Write(monster.MonsterMaxHealth);
+                packet.Write(monster.MonsterCurrentHealth);
 
                 ServerMock.Instance.PacketSenderServer.SendToClient(packet);
             }
