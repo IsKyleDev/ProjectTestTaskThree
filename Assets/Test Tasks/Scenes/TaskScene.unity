@@ -1152,6 +1152,7 @@ MonoBehaviour:
   txtMonsterName: {fileID: 845489305}
   sliderMonsterHealth: {fileID: 995470972}
   imgMonster: {fileID: 880283297}
+  btnTakeDamage: {fileID: 2137902838}
   monsterSprites:
   - {fileID: 21300000, guid: 9aaef9aec044d5742b12afa544013143, type: 3}
   - {fileID: 21300000, guid: 14d1bd72d001df345a1cbc0291035e13, type: 3}

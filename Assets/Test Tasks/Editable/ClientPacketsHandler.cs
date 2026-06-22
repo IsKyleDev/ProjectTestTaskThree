@@ -19,12 +19,8 @@ namespace TestTask.Editable
         public static void MonsterDataRecieved(Packet packet)
         {
             int monsterId = packet.ReadInt();
-
-            MonsterNames monsterType =
-                (MonsterNames)packet.ReadInt();
-
+            MonsterNames monsterType = (MonsterNames)packet.ReadInt();
             float maxHealth = packet.ReadFloat();
-
             float currentHealth = packet.ReadFloat();
 
             MonsterData monster = new MonsterData(monsterId, monsterType, maxHealth, currentHealth);
@@ -38,6 +34,16 @@ namespace TestTask.Editable
         {
             Packet packet = new Packet(1);
             ClientManager.Instance.PacketSenderClient.SendToServer(packet);
+        }
+
+        public static void SendMonsterTakeDamageRequest()
+        {
+            using (Packet packet = new Packet(2))
+            {
+                packet.Write(ClientManager.Instance.ClientMobsManager.MonsterData.MonsterId);
+
+                ClientManager.Instance.PacketSenderClient.SendToServer(packet);
+            }
         }
         #endregion
     }

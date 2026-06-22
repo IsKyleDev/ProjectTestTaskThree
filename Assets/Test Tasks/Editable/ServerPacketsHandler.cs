@@ -18,6 +18,18 @@ namespace TestTask.Editable
             }
         }
 
+        public static void MonsterTakeDamageRequest(Packet packet)
+        {
+            int monsterId = packet.ReadInt();
+
+            if (monsterId == ServerMock.Instance.ServerMobsManager.MonsterData.MonsterId)
+            {
+                ServerMock.Instance.ServerMobsManager.HandleMonsterTakeDamage();
+            }
+ 
+        }
+
+
         #endregion
 
         #region Packet Senders
@@ -40,7 +52,6 @@ namespace TestTask.Editable
             {
                 packet.Write(monster.MonsterId);
                 packet.Write((int)monster.MonsterType);
-
                 packet.Write(monster.MonsterMaxHealth);
                 packet.Write(monster.MonsterCurrentHealth);
 

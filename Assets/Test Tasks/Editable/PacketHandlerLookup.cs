@@ -15,6 +15,7 @@ namespace TestTask.Editable
         public static Dictionary<int, PacketHandler> OnServerPacketHandlers = new Dictionary<int, PacketHandler>()
         {
             {1, ServerPacketsHandler.LoginRequest},
+            {2, ServerPacketsHandler.MonsterTakeDamageRequest},
         };
     }
 }

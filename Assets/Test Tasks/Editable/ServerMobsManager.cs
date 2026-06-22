@@ -24,14 +24,31 @@ namespace TestTask.Editable
 
             MonsterData = new MonsterData(monsterId, monsterType, monsterMaxHealth, monsterCurrentHealth);
             MonsterData.MonsterDeath += OnMonsterDied;
+            MonsterData.MonsterDamaged += OnMonsterDamaged;
 
             return MonsterData;
         }
 
+
+
         public void OnMonsterDied()
         {
             MonsterData.MonsterDeath -= OnMonsterDied;
+            MonsterData.MonsterDamaged -= OnMonsterDamaged;
+
             MonsterData = SpawnMonster();
+
+            ServerPacketsHandler.SendMonsterData();
+        }
+
+        public void OnMonsterDamaged(float obj)
+        {
+            ServerPacketsHandler.SendMonsterData();
+        }
+
+        public void HandleMonsterTakeDamage()
+        {
+            MonsterData.TakeDamage(25);
         }
     }
 }  

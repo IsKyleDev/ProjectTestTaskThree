@@ -1,3 +1,4 @@
+using System;
 using TestTask.NonEditable;
 using TMPro;
 using UnityEngine;
@@ -10,22 +11,35 @@ namespace TestTask.Editable
         [SerializeField] private TMP_Text txtMonsterName;
         [SerializeField] private Slider sliderMonsterHealth;
         [SerializeField] private Image imgMonster;
+        [SerializeField] private Button btnTakeDamage;
         [SerializeField] private Sprite[] monsterSprites;
         [field: SerializeField] public MonsterData MonsterData { get; private set; }
+
+        private void Start()
+        {
+            btnTakeDamage.onClick.AddListener(HandleOnBtnTakeDamage);
+        }
+
+        private void HandleOnBtnTakeDamage()
+        {
+            ClientPacketsHandler.SendMonsterTakeDamageRequest();
+        }
 
         public void SetMonster(MonsterData monsterData)
         {
             MonsterData = monsterData;
 
-            Debug.Log(
-                $"Monster Spawned: {monsterData.MonsterName}" +
-                $" HP: {monsterData.MonsterCurrentHealth}/" +
-                $"{monsterData.MonsterMaxHealth}");
+            RefreshUI();
+        }
 
-            txtMonsterName.text = monsterData.MonsterName;
-            SetMonsterSprite(monsterData.MonsterType);
-            sliderMonsterHealth.maxValue = monsterData.MonsterMaxHealth;
-            sliderMonsterHealth.value = monsterData.MonsterCurrentHealth;
+        private void RefreshUI()
+        {
+            txtMonsterName.text = MonsterData.MonsterName;
+
+            SetMonsterSprite(MonsterData.MonsterType);
+
+            sliderMonsterHealth.maxValue = MonsterData.MonsterMaxHealth;
+            sliderMonsterHealth.value = MonsterData.MonsterCurrentHealth;
         }
 
         private void SetMonsterSprite(MonsterNames monsterType)
