@@ -35,6 +35,25 @@ namespace TestTask.Editable
             ClientManager.Instance.ClientMobsManager.SetMonster(monster);
             ClientManager.Instance.ClientMobsManager.SetVersion(version);
         }
+
+        public static void ColorDataReceived(Packet packet)
+        {
+            int colorCount = packet.ReadInt();
+
+            List<Color> colors = new List<Color>(colorCount);
+
+            for (int i = 0; i < colorCount; i++)
+            {
+                float r = packet.ReadFloat();
+                float g = packet.ReadFloat();
+                float b = packet.ReadFloat();
+                float a = packet.ReadFloat();
+
+                colors.Add(new Color(r, g, b, a));
+            }
+
+            ClientManager.Instance.ClientColorManager.SetColors(colors);
+        }
         #endregion
 
         #region Packet Senders
@@ -46,13 +65,18 @@ namespace TestTask.Editable
 
         public static void SendMonsterTakeDamageRequest()
         {
-            using (Packet packet = new Packet(2))
-            {
-                packet.Write(ClientManager.Instance.ClientMobsManager.MonsterData.MonsterId);
-
-                ClientManager.Instance.PacketSenderClient.SendToServer(packet);
-            }
+            Packet packet = new Packet(2);
+            packet.Write(ClientManager.Instance.ClientMobsManager.MonsterData.MonsterId);
+            ClientManager.Instance.PacketSenderClient.SendToServer(packet);
         }
+
+        public static void SendColorRequest()
+        {
+            Packet packet = new Packet(3);
+            ClientManager.Instance.PacketSenderClient.SendToServer(packet);
+        }
+
+
         #endregion
     }
 }

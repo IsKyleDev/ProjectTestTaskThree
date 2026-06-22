@@ -1,4 +1,5 @@
 using TestTask.NonEditable;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace TestTask.Editable
@@ -14,7 +15,7 @@ namespace TestTask.Editable
             if (clientLogInResponse == LoginResponse.Success)
             {
                 // Inform the client about this monster via a packet.
-                SendMonsterData();
+                SendMonsterDataResponse();
             }
         }
 
@@ -33,6 +34,13 @@ namespace TestTask.Editable
  
         }
 
+        public static void ColorRequest(Packet packet)
+        {
+            // send colors back...
+            // ServerMock.Instance.ServerColors.GetServerColors
+            SendColorDataResponse();
+        }
+
 
         #endregion
 
@@ -48,7 +56,7 @@ namespace TestTask.Editable
             }
         }
 
-        public static void SendMonsterData()
+        public static void SendMonsterDataResponse()
         {
 
             MonsterData monster = ServerMock.Instance.ServerMobsManager.MonsterData;
@@ -60,6 +68,26 @@ namespace TestTask.Editable
                 packet.Write((int)monster.MonsterType);
                 packet.Write(monster.MonsterMaxHealth);
                 packet.Write(monster.MonsterCurrentHealth);
+
+                ServerMock.Instance.PacketSenderServer.SendToClient(packet);
+            }
+        }
+
+        public static void SendColorDataResponse()
+        {
+            using (Packet packet = new Packet(3))
+            {
+                var colors = ServerMock.Instance.ServerColors.GeneratedColors;
+
+                packet.Write(colors.Count);
+
+                foreach (Color color in colors)
+                {
+                    packet.Write(color.r);
+                    packet.Write(color.g);
+                    packet.Write(color.b);
+                    packet.Write(color.a);
+                }
 
                 ServerMock.Instance.PacketSenderServer.SendToClient(packet);
             }

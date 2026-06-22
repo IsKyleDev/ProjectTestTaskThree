@@ -44,7 +44,7 @@ namespace TestTask.Editable
 
             MonsterData = SpawnMonster();
             IncrementVersion();
-            ServerPacketsHandler.SendMonsterData();
+            ServerPacketsHandler.SendMonsterDataResponse();
         }
 
         public void OnMonsterDamaged(float obj)
@@ -52,7 +52,7 @@ namespace TestTask.Editable
             if (MonsterData.MonsterCurrentHealth > 0)
             {
                 IncrementVersion();
-                ServerPacketsHandler.SendMonsterData();
+                ServerPacketsHandler.SendMonsterDataResponse();
             }
         }
 
