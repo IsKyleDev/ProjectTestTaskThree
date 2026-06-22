@@ -9,10 +9,16 @@ namespace TestTask.Editable
     public class ServerMobsManager
     {
         [field: SerializeField] public MonsterData MonsterData { get; private set; }
+        public int MonsterStateVersion { get; private set; }
 
         public ServerMobsManager()
         {
             MonsterData = SpawnMonster();
+        }
+
+        public void IncrementVersion()
+        {
+            MonsterStateVersion++;
         }
 
         public MonsterData SpawnMonster()
@@ -37,18 +43,24 @@ namespace TestTask.Editable
             MonsterData.MonsterDamaged -= OnMonsterDamaged;
 
             MonsterData = SpawnMonster();
-
+            IncrementVersion();
             ServerPacketsHandler.SendMonsterData();
         }
 
         public void OnMonsterDamaged(float obj)
         {
-            ServerPacketsHandler.SendMonsterData();
+            if (MonsterData.MonsterCurrentHealth > 0)
+            {
+                IncrementVersion();
+                ServerPacketsHandler.SendMonsterData();
+            }
         }
 
         public void HandleMonsterTakeDamage()
         {
             MonsterData.TakeDamage(25);
+            Debug.Log("SERVER MONSTER ON DAMAGE: " + "Current Monster: " + MonsterData.MonsterName + " ID: " + MonsterData.MonsterId +
+            " Current HP: " + MonsterData.MonsterCurrentHealth + "/" + MonsterData.MonsterMaxHealth);
         }
     }
 }  

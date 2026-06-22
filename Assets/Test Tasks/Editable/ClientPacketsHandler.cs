@@ -16,16 +16,24 @@ namespace TestTask.Editable
             ClientManager.Instance.SetClientLogInStatus(responseCode, clientId);
         }
 
-        public static void MonsterDataRecieved(Packet packet)
+        public static void MonsterDataReceived(Packet packet)
         {
+            int version = packet.ReadInt();
+
+            if (ClientManager.Instance.ClientMobsManager.IsVersionOutdated(version))
+            {
+                Debug.Log("Ignoring monster version: " + version);
+                return;
+            }
+
             int monsterId = packet.ReadInt();
             MonsterNames monsterType = (MonsterNames)packet.ReadInt();
             float maxHealth = packet.ReadFloat();
             float currentHealth = packet.ReadFloat();
 
             MonsterData monster = new MonsterData(monsterId, monsterType, maxHealth, currentHealth);
-
             ClientManager.Instance.ClientMobsManager.SetMonster(monster);
+            ClientManager.Instance.ClientMobsManager.SetVersion(version);
         }
         #endregion
 

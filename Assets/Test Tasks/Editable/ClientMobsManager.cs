@@ -13,7 +13,8 @@ namespace TestTask.Editable
         [SerializeField] private Image imgMonster;
         [SerializeField] private Button btnTakeDamage;
         [SerializeField] private Sprite[] monsterSprites;
-        [field: SerializeField] public MonsterData MonsterData { get; private set; }
+        public MonsterData MonsterData { get; private set; }
+        public int LastMonsterStateVersion { get; private set; } = -1;
 
         private void Start()
         {
@@ -22,13 +23,16 @@ namespace TestTask.Editable
 
         private void HandleOnBtnTakeDamage()
         {
+            if (MonsterData == null)
+            {
+                return;
+            }
             ClientPacketsHandler.SendMonsterTakeDamageRequest();
         }
 
         public void SetMonster(MonsterData monsterData)
         {
             MonsterData = monsterData;
-
             RefreshUI();
         }
 
@@ -40,6 +44,9 @@ namespace TestTask.Editable
 
             sliderMonsterHealth.maxValue = MonsterData.MonsterMaxHealth;
             sliderMonsterHealth.value = MonsterData.MonsterCurrentHealth;
+
+            Debug.Log("CLIENT UPDATING DATA: " + "Current Monster: " + MonsterData.MonsterName + " ID: " + MonsterData.MonsterId + 
+                " Current HP: " + MonsterData.MonsterCurrentHealth + "/" + MonsterData.MonsterMaxHealth);
         }
 
         private void SetMonsterSprite(MonsterNames monsterType)
@@ -66,6 +73,16 @@ namespace TestTask.Editable
                     imgMonster.sprite = monsterSprites[4];
                     break;
             }
+        }
+
+        public bool IsVersionOutdated(int version)
+        {
+            return version <= LastMonsterStateVersion;
+        }
+
+        public void SetVersion(int version)
+        {
+            LastMonsterStateVersion = version;
         }
 
     }

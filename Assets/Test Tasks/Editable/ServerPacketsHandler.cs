@@ -26,6 +26,10 @@ namespace TestTask.Editable
             {
                 ServerMock.Instance.ServerMobsManager.HandleMonsterTakeDamage();
             }
+            else
+            {
+                Debug.Log("Monster ID does not match, returning.");
+            }
  
         }
 
@@ -46,10 +50,12 @@ namespace TestTask.Editable
 
         public static void SendMonsterData()
         {
+
             MonsterData monster = ServerMock.Instance.ServerMobsManager.MonsterData;
 
             using (Packet packet = new Packet(2))
             {
+                packet.Write(ServerMock.Instance.ServerMobsManager.MonsterStateVersion);
                 packet.Write(monster.MonsterId);
                 packet.Write((int)monster.MonsterType);
                 packet.Write(monster.MonsterMaxHealth);
